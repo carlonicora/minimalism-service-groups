@@ -53,6 +53,29 @@ class Groups extends AbstractService
 
     /**
      * @param int $userId
+     * @param int $groupId
+     * @return bool
+     */
+    public function isInGroup(
+        int $userId,
+        int $groupId,
+    ): bool
+    {
+        $groups = $this->groupIO->readByUserId(
+            userId: $userId,
+        );
+
+        foreach ($groups ?? [] as $group){
+            if ($group->getGroupId() === $groupId){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int $userId
      * @return bool
      */
     public function isUserAdmin(
