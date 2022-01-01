@@ -8,6 +8,7 @@ use CarloNicora\Minimalism\Services\Groups\Data\Group;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
 use CarloNicora\Minimalism\Services\Groups\IO\GroupIO;
 use CarloNicora\Minimalism\Services\Groups\IO\UserIO;
+use Exception;
 
 class Groups extends AbstractService
 {
@@ -16,13 +17,9 @@ class Groups extends AbstractService
 
     /**
      * @param DataMapper $mapper
-     * @param GroupIO $groupIO
-     * @param UserIO $userIO
      */
     public function __construct(
         private DataMapper $mapper,
-        private GroupIO    $groupIO,
-        private UserIO     $userIO,
     )
     {
         $this->cacheBuilder = new GroupsCacheFactory();
@@ -41,12 +38,16 @@ class Groups extends AbstractService
     /**
      * @param int $userId
      * @return Group[]
+     * @throws Exception
      */
     public function getUserGroups(
         int $userId,
     ): array
     {
-        return $this->groupIO->readByUserId(
+        /** @var GroupIO $groupIO */
+        $groupIO = $this->objectFactory->create(GroupIO::class);
+
+        return $groupIO->readByUserId(
             userId: $userId,
         );
     }
@@ -55,13 +56,17 @@ class Groups extends AbstractService
      * @param int $userId
      * @param int $groupId
      * @return bool
+     * @throws Exception
      */
     public function isInGroup(
         int $userId,
         int $groupId,
     ): bool
     {
-        $groups = $this->groupIO->readByUserId(
+        /** @var GroupIO $groupIO */
+        $groupIO = $this->objectFactory->create(GroupIO::class);
+
+        $groups = $groupIO->readByUserId(
             userId: $userId,
         );
 
@@ -77,12 +82,16 @@ class Groups extends AbstractService
     /**
      * @param int $userId
      * @return bool
+     * @throws Exception
      */
     public function isUserAdmin(
         int $userId,
     ): bool
     {
-        $groups = $this->groupIO->readByUserId(
+        /** @var GroupIO $groupIO */
+        $groupIO = $this->objectFactory->create(GroupIO::class);
+
+        $groups = $groupIO->readByUserId(
             userId: $userId,
         );
 
@@ -98,12 +107,16 @@ class Groups extends AbstractService
     /**
      * @param int $groupId
      * @return array
+     * @throws Exception
      */
     public function getGroupUsers(
         int $groupId,
     ): array
     {
-        return $this->userIO->readByGroupId(
+        /** @var UserIO $userIO */
+        $userIO = $this->objectFactory->create(UserIO::class);
+
+        return $userIO->readByGroupId(
             groupId: $groupId,
         );
     }
