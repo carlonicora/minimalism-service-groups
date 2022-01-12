@@ -23,7 +23,6 @@ class Groups extends AbstractService
     )
     {
         $this->cacheBuilder = new GroupsCacheFactory();
-        parent::__construct();
     }
 
     /**
