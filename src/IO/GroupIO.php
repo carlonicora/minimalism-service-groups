@@ -59,10 +59,10 @@ class GroupIO extends AbstractLoader
         int $userId,
     ): array
     {
-        /** @see UserGroupsTable::readUserGroups() */
+        /** @see GroupsTable::readUserGroups() */
         return $this->returnObjectArray(
             recordset: $this->data->read(
-                tableInterfaceClassName: UserGroupsTable::class,
+                tableInterfaceClassName: GroupsTable::class,
                 functionName: 'readUserGroups',
                 parameters: [$userId],
                 cacheBuilder:GroupsCacheFactory::userGroups($userId),
@@ -83,6 +83,26 @@ class GroupIO extends AbstractLoader
             tableInterfaceClassName: GroupsTable::class,
             records: [['groupId' => $groupId]],
             cacheBuilder: GroupsCacheFactory::group($groupId)
+        );
+    }
+
+    /**
+     * @param Group $group
+     * @return Group
+     * @throws Exception
+     */
+    public function insert(
+        Group $group,
+    ): Group
+    {
+        $record = $this->data->insert(
+            tableInterfaceClassName: GroupsTable::class,
+            records: $group->export(),
+        );
+
+        return $this->returnSingleObject(
+            recordset: [$record],
+            objectType: Group::class,
         );
     }
 }

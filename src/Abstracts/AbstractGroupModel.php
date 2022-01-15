@@ -27,12 +27,13 @@ abstract class AbstractGroupModel extends AbstractModel
         parent::__construct($minimalismFactories,$function);
 
         $this->currentUser = $minimalismFactories->getServiceFactory()->create(UserServiceInterface::class);
-
-        if ($this->currentUser->isVisitor()){
-            throw new RuntimeException('Unauthorized', HttpCode::Unauthorized->value);
-        }
+        $this->currentUser->load();
 
         try {
+            if ($this->currentUser->isVisitor()) {
+                throw new RuntimeException('Unauthorized', HttpCode::Unauthorized->value);
+            }
+
             $this->currentUser->getId();
         } catch (Exception) {
             throw new RuntimeException('Unauthorized', HttpCode::Unauthorized->value);

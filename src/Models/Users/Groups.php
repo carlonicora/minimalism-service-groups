@@ -39,6 +39,10 @@ class Groups extends AbstractGroupModel
             ),
         );
 
+        if (count($this->document->resources) === 0){
+            return HttpCode::NotFound;
+        }
+
         return HttpCode::Ok;
     }
 }

@@ -19,22 +19,6 @@ class UserGroupsTable extends AbstractMySqlTable
     ];
 
     /**
-     * @param int $userId
-     * @return array
-     * @throws Exception
-     */
-    public function readUserGroups(
-        int $userId,
-    ): array{
-        $this->sql = 'SELECT * '
-            . ' FROM ' . self::getTableName()
-            . ' WHERE userId=?';
-        $this->parameters = ['i', $userId];
-
-        return $this->functions->runRead();
-    }
-
-    /**
      * @param int $groupId
      * @return array
      * @throws Exception

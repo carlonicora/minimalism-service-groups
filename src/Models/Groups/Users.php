@@ -9,6 +9,7 @@ use CarloNicora\Minimalism\Services\Builder\Builder;
 use CarloNicora\Minimalism\Services\Groups\Abstracts\AbstractGroupModel;
 use CarloNicora\Minimalism\Services\Groups\Builders\UserBuilder;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
+use CarloNicora\Minimalism\Services\Groups\IO\GroupIO;
 use CarloNicora\Minimalism\Services\Groups\IO\UserIO;
 use Exception;
 
@@ -39,6 +40,10 @@ class Users extends AbstractGroupModel
             ),
         );
 
+        if (count($this->document->resources) === 0){
+            return HttpCode::NotFound;
+        }
+
         return HttpCode::Ok;
     }
 
@@ -53,11 +58,12 @@ class Users extends AbstractGroupModel
         PositionedEncryptedParameter $userId,
     ): HttpCode
     {
-        $this->validateBearerGroupBelonging($groupId->getValue());
+        $group = $this->objectFactory->create(GroupIO::class)->readByGroupId($groupId->getValue());
+        $this->validateBearerGroupBelonging($group->getId());
 
         $this->objectFactory->create(UserIO::class)->insert(
             userId: $userId->getValue(),
-            groupId: $groupId->getValue(),
+            groupId: $group->getId(),
         );
 
         return HttpCode::Created;
@@ -74,11 +80,16 @@ class Users extends AbstractGroupModel
         PositionedEncryptedParameter $userId,
     ): HttpCode
     {
-        $this->validateBearerGroupBelonging($groupId->getValue());
+        $group = $this->objectFactory->create(GroupIO::class)->readByGroupId($groupId->getValue());
+        $this->validateBearerGroupBelonging($group->getId());
+
+        if (!$this->objectFactory->create(UserIO::class)->doesUserBelongsToGroup($userId->getValue(), $group->getId())) {
+            return HttpCode::PreconditionFailed;
+        }
 
         $this->objectFactory->create(UserIO::class)->delete(
             userId: $userId->getValue(),
-            groupId: $groupId->getValue(),
+            groupId: $group->getId(),
         );
 
         return HttpCode::NoContent;

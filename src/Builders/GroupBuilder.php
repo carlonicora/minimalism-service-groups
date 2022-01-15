@@ -17,7 +17,7 @@ class GroupBuilder extends AbstractResourceBuilder
         array $data
     ): void
     {
-        $this->response->id = $this->encrypter->encryptId($data['streamId']);
+        $this->response->id = $this->encrypter->encryptId($data['groupId']);
         $this->response->attributes->add(name: 'name', value: $data['name']);
         $this->response->attributes->add(name: 'canCreateGroups', value: $data['canCreateGroups']);
     }

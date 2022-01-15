@@ -56,10 +56,12 @@ class Groups extends AbstractGroupModel
         PositionedEncryptedParameter $groupId,
     ): HttpCode
     {
-        $this->validateBearerGroupBelonging($groupId->getValue());
+        $group = $this->objectFactory->create(GroupIO::class)->readByGroupId($groupId->getValue());
 
-        $this->objectFactory->create(GroupIO::class)->delete($groupId->getValue());
-        $this->objectFactory->create(UserIO::class)->deleteByGroupId($groupId->getValue());
+        $this->validateBearerGroupBelonging($group->getId());
+
+        $this->objectFactory->create(GroupIO::class)->delete($group->getId());
+        $this->objectFactory->create(UserIO::class)->deleteByGroupId($group->getId());
 
         return HttpCode::NoContent;
     }
