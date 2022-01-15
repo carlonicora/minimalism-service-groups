@@ -19,30 +19,46 @@ class Groups extends AbstractGroupModel
 {
     /**
      * @param Builder $builder
-     * @param PositionedEncryptedParameter $groupId
+     * @param PositionedEncryptedParameter|null $groupId
      * @return HttpCode
      * @throws Exception
      */
     public function get(
         Builder $builder,
-        PositionedEncryptedParameter $groupId,
+        ?PositionedEncryptedParameter $groupId=null,
     ): HttpCode
     {
-        /** @see GroupIO::readByGroupId() */
-        $this->document->addResource(
-            resource: current(
-                $builder->build(
+        if ($groupId !== null) {
+            /** @see GroupIO::readByGroupId() */
+            $this->document->addResource(
+                resource: current(
+                    $builder->build(
+                        resourceTransformerClass: GroupBuilder::class,
+                        function: new DataFunction(
+                            type: DataFunctionInterface::TYPE_LOADER,
+                            className: GroupIO::class,
+                            functionName: 'readByGroupId',
+                            parameters: [$groupId->getValue()],
+                            cacheBuilder: GroupsCacheFactory::group($groupId->getValue()),
+                        ),
+                    ),
+                ),
+            );
+        } else {
+            /** @see GroupIO::readAll() */
+            $this->document->addResourceList(
+                resourceList:$builder->build(
                     resourceTransformerClass: GroupBuilder::class,
                     function: new DataFunction(
                         type: DataFunctionInterface::TYPE_LOADER,
                         className: GroupIO::class,
-                        functionName: 'readByGroupId',
+                        functionName: 'readAll',
                         parameters: [$groupId->getValue()],
                         cacheBuilder: GroupsCacheFactory::group($groupId->getValue()),
                     ),
                 ),
-            ),
-        );
+            );
+        }
 
         return HttpCode::Ok;
     }

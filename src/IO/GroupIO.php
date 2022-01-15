@@ -4,12 +4,29 @@ namespace CarloNicora\Minimalism\Services\Groups\IO;
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
 use CarloNicora\Minimalism\Services\Groups\Data\Group;
 use CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables\GroupsTable;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables\UserGroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
 use Exception;
 
 class GroupIO extends AbstractLoader
 {
+    /**
+     * @return Group[]
+     * @throws Exception
+     */
+    public function readAll(
+    ): array
+    {
+        /** @see GroupsTable::readAll() */
+        return $this->returnObjectArray(
+            recordset: $this->data->read(
+                tableInterfaceClassName: GroupsTable::class,
+                functionName: 'readAll',
+                parameters: [],
+            ),
+            objectType: Group::class,
+        );
+    }
+
     /**
      * @param int $groupId
      * @return Group
