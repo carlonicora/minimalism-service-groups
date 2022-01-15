@@ -53,8 +53,7 @@ class Groups extends AbstractGroupModel
                         type: DataFunctionInterface::TYPE_LOADER,
                         className: GroupIO::class,
                         functionName: 'readAll',
-                        parameters: [$groupId->getValue()],
-                        cacheBuilder: GroupsCacheFactory::group($groupId->getValue()),
+                        parameters: [],
                     ),
                 ),
             );
