@@ -29,7 +29,7 @@ class UserGroupsTable extends AbstractMySqlTable
         $this->sql = 'SELECT * '
             . ' FROM ' . self::getTableName()
             . ' WHERE userId=?';
-        $this->parameters = ['s', $userId];
+        $this->parameters = ['i', $userId];
 
         return $this->functions->runRead();
     }
@@ -45,7 +45,26 @@ class UserGroupsTable extends AbstractMySqlTable
         $this->sql = 'SELECT * '
             . ' FROM ' . self::getTableName()
             . ' WHERE groupId=?';
-        $this->parameters = ['s', $groupId];
+        $this->parameters = ['i', $groupId];
+
+        return $this->functions->runRead();
+    }
+
+    /**
+     * @param int $userId
+     * @param int $groupId
+     * @return array
+     * @throws Exception
+     */
+    public function readByUserIdGroupId(
+        int $userId,
+        int $groupId,
+    ): array{
+        $this->sql = 'SELECT * '
+            . ' FROM ' . self::getTableName()
+            . ' WHERE userId=?'
+            . ' AND groupId=?';
+        $this->parameters = ['ii', $userId, $groupId];
 
         return $this->functions->runRead();
     }

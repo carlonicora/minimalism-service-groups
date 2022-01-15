@@ -2,30 +2,20 @@
 
 namespace CarloNicora\Minimalism\Services\Groups\Data;
 
-use CarloNicora\Minimalism\Factories\ObjectFactory;
+use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractDataObject;
-use CarloNicora\Minimalism\Services\Groups\Enums\DefaultGroups;
+use Exception;
 
 class Group extends AbstractDataObject
 {
-    /**
-     * @param ObjectFactory $objectFactory
-     * @param array|null $data
-     * @param int|null $groupId
-     */
-    public function __construct(
-        ObjectFactory $objectFactory,
-        ?array $data = null,
-        protected ?int $groupId=null,
-    )
-    {
-        if ($data !== null) {
-            parent::__construct(
-                objectFactory: $objectFactory,
-                data: $data,
-            );
-        }
-    }
+    /** @var int  */
+    private int $id;
+
+    /** @var string  */
+    private string $name;
+
+    /** @var bool  */
+    private bool $canCreateGroups=false;
 
     /**
      * @param array $data
@@ -34,7 +24,9 @@ class Group extends AbstractDataObject
         array $data,
     ): void
     {
-        $this->groupId = $data['groupId'];
+        $this->id = $data['groupId'];
+        $this->name = $data['name'];
+        $this->canCreateGroups = $data['canCreateGroups'] ?? false;
     }
 
     /**
@@ -45,7 +37,9 @@ class Group extends AbstractDataObject
     {
         $response = parent::export();
 
-        $response['groupId'] = $this->groupId;
+        $response['groupId'] = $this->id ?? null;
+        $response['name'] = $this->name;
+        $response['canCreateGroups'] = $this->canCreateGroups;
 
         return $response;
     }
@@ -53,18 +47,32 @@ class Group extends AbstractDataObject
     /**
      * @return int
      */
-    public function getGroupId(
+    public function getId(
     ): int
     {
-        return $this->groupId;
+        return $this->id;
     }
 
     /**
      * @return bool
      */
-    public function isAdminGroup(
+    public function canCreateGroups(
     ): bool
     {
-        return $this->groupId === DefaultGroups::Admin->value;
+        return $this->canCreateGroups;
+    }
+
+    /**
+     * @param ResourceObject $object
+     * @throws Exception
+     */
+    public function ingestResource(
+        ResourceObject $object,
+    ): void
+    {
+        $this->name = $object->attributes->get('name');
+        if ($object->attributes->has('canCreateGroups')) {
+            $this->canCreateGroups = $object->attributes->get('canCreateGroups');
+        }
     }
 }

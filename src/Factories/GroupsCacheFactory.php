@@ -1,21 +1,34 @@
 <?php
-
 namespace CarloNicora\Minimalism\Services\Groups\Factories;
 
 use CarloNicora\Minimalism\Interfaces\Cache\Interfaces\CacheBuilderInterface;
-use CarloNicora\Minimalism\Services\Cacher\Factories\CacheBuilderFactory;
+use CarloNicora\Minimalism\Services\Groups\Abstracts\AbstractCacheFactory;
 
-class GroupsCacheFactory extends CacheBuilderFactory
+class GroupsCacheFactory extends AbstractCacheFactory
 {
+    /**
+     * @param int $groupId
+     * @return CacheBuilderInterface
+     */
+    public static function group(
+        int $groupId,
+    ): CacheBuilderInterface
+    {
+        return self::create(
+            cacheName: 'groupId',
+            identifier: $groupId,
+        );
+    }
+
     /**
      * @param int $userId
      * @return CacheBuilderInterface
      */
-    public function userGroups(
+    public static function userGroups(
         int $userId,
     ): CacheBuilderInterface
     {
-        return $this->createList(
+        return self::createList(
             listName: 'groupId',
             cacheName: 'userId',
             identifier: $userId,
@@ -26,11 +39,11 @@ class GroupsCacheFactory extends CacheBuilderFactory
      * @param int $groupId
      * @return CacheBuilderInterface
      */
-    public function groupUsers(
+    public static function groupUsers(
         int $groupId,
     ): CacheBuilderInterface
     {
-        return $this->createList(
+        return self::createList(
             listName: 'userId',
             cacheName: 'groupId',
             identifier: $groupId,
