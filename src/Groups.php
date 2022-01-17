@@ -44,8 +44,9 @@ class Groups extends AbstractService
             userId: $userId,
         );
 
+        /** @var Group $group */
         foreach ($groups ?? [] as $group){
-            if ($group->getGroupId() === $groupId){
+            if ($group->getId() === $groupId){
                 return true;
             }
         }
