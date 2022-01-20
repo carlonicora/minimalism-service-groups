@@ -18,12 +18,29 @@ class Groups extends AbstractService
         int $userId,
     ): array
     {
-        /** @var GroupIO $groupIO */
-        $groupIO = $this->objectFactory->create(GroupIO::class);
-
-        return $groupIO->readByUserId(
+        return $this->objectFactory->create(GroupIO::class)->readByUserId(
             userId: $userId,
         );
+    }
+
+    /**
+     * @param int $userId
+     * @param array $groupIds
+     * @return bool
+     * @throws Exception
+     */
+    public function isInGroups(
+        int $userId,
+        array $groupIds,
+    ): bool
+    {
+        foreach ($this->getUserGroups($userId) as $group){
+            if (in_array($group->getId(), $groupIds, true)){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -37,10 +54,7 @@ class Groups extends AbstractService
         int $groupId,
     ): bool
     {
-        /** @var GroupIO $groupIO */
-        $groupIO = $this->objectFactory->create(GroupIO::class);
-
-        $groups = $groupIO->readByUserId(
+        $groups = $this->objectFactory->create(GroupIO::class)->readByUserId(
             userId: $userId,
         );
 
@@ -63,10 +77,7 @@ class Groups extends AbstractService
         int $groupId,
     ): array
     {
-        /** @var UserIO $userIO */
-        $userIO = $this->objectFactory->create(UserIO::class);
-
-        $users = $userIO->readByGroupId(
+        $users = $this->objectFactory->create(UserIO::class)->readByGroupId(
             groupId: $groupId,
         );
 
