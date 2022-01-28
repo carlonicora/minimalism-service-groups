@@ -3,7 +3,7 @@
 namespace CarloNicora\Minimalism\Services\Groups\Data;
 
 use CarloNicora\JsonApi\Objects\ResourceObject;
-use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractDataObject;
+use CarloNicora\Minimalism\Interfaces\Data\Abstracts\AbstractDataObject;
 use Exception;
 
 class Group extends AbstractDataObject
