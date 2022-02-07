@@ -2,46 +2,40 @@
 namespace CarloNicora\Minimalism\Services\Groups\Models\Groups;
 
 use CarloNicora\Minimalism\Enums\HttpCode;
-use CarloNicora\Minimalism\Interfaces\Data\Interfaces\DataFunctionInterface;
-use CarloNicora\Minimalism\Interfaces\Data\Objects\DataFunction;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Parameters\PositionedEncryptedParameter;
-use CarloNicora\Minimalism\Services\Builder\Builder;
-use CarloNicora\Minimalism\Services\Groups\Abstracts\AbstractGroupModel;
-use CarloNicora\Minimalism\Services\Groups\Builders\UserBuilder;
-use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\Groups\IO\GroupIO;
-use CarloNicora\Minimalism\Services\Groups\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\Builders\UserBuilders;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\Caches\GroupsCacheFactory;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\Models\Abstracts\AbstractGroupModel;
+use CarloNicora\Minimalism\Services\ResourceBuilder\ResourceBuilder;
 use Exception;
 
 class Users extends AbstractGroupModel
 {
     /**
-     * @param Builder $builder
+     * @param ResourceBuilder $builder
      * @param PositionedEncryptedParameter $groupId
      * @return HttpCode
      * @throws Exception
      */
     public function get(
-        Builder $builder,
+        ResourceBuilder $builder,
         PositionedEncryptedParameter $groupId,
     ): HttpCode
     {
-        /** @see UserIO::readByGroupId() */
+        $users = $this->objectFactory->create(UserIO::class)->readByGroupId($groupId->getValue());
+
         $this->document->addResourceList(
-            resourceList: $builder->build(
-                resourceTransformerClass: UserBuilder::class,
-                function: new DataFunction(
-                    type: DataFunctionInterface::TYPE_LOADER,
-                    className: UserIO::class,
-                    functionName: 'readByGroupId',
-                    parameters: [$groupId->getValue()],
-                    cacheBuilder: GroupsCacheFactory::groupUsers($groupId->getValue()),
-                ),
+            resourceList: $builder->buildResources(
+                builderClass: UserBuilders::class,
+                data: $users,
+                cacheBuilder: GroupsCacheFactory::groupUsers($groupId->getValue()),
             ),
         );
 
         if (count($this->document->resources) === 0){
-            return HttpCode::NotFound;
+            return HttpCode::NoContent;
         }
 
         return HttpCode::Ok;

@@ -1,55 +1,17 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables;
 
-use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractMySqlTable;
-use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
-use Exception;
+use CarloNicora\Minimalism\Services\MySQL\Data\SqlField;
+use CarloNicora\Minimalism\Services\MySQL\Data\SqlTable;
+use CarloNicora\Minimalism\Services\MySQL\Enums\FieldOption;
+use CarloNicora\Minimalism\Services\MySQL\Enums\FieldType;
 
-class UserGroupsTable extends AbstractMySqlTable
+#[SqlTable(name: 'userGroups', databaseIdentifier: 'Groups')]
+enum UserGroupsTable
 {
-    /** @var string  */
-    protected static string $tableName = 'userGroups';
+    #[SqlField(fieldType: FieldType::Integer,fieldOption: FieldOption::PrimaryKey)]
+    case userId;
 
-    /** @var array  */
-    protected static array $fields = [
-        'userId'    => FieldInterface::INTEGER
-                    +  FieldInterface::PRIMARY_KEY,
-        'groupId'   => FieldInterface::INTEGER
-                    +  FieldInterface::PRIMARY_KEY,
-    ];
-
-    /**
-     * @param int $groupId
-     * @return array
-     * @throws Exception
-     */
-    public function readGroupUsers(
-        int $groupId,
-    ): array{
-        $this->sql = 'SELECT * '
-            . ' FROM ' . self::getTableName()
-            . ' WHERE groupId=?';
-        $this->parameters = ['i', $groupId];
-
-        return $this->functions->runRead();
-    }
-
-    /**
-     * @param int $userId
-     * @param int $groupId
-     * @return array
-     * @throws Exception
-     */
-    public function readByUserIdGroupId(
-        int $userId,
-        int $groupId,
-    ): array{
-        $this->sql = 'SELECT * '
-            . ' FROM ' . self::getTableName()
-            . ' WHERE userId=?'
-            . ' AND groupId=?';
-        $this->parameters = ['ii', $userId, $groupId];
-
-        return $this->functions->runRead();
-    }
+    #[SqlField(fieldType: FieldType::Integer,fieldOption: FieldOption::PrimaryKey)]
+    case groupId;
 }

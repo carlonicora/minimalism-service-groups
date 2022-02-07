@@ -1,12 +1,12 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Groups\Abstracts;
+namespace CarloNicora\Minimalism\Services\Groups\Models\Abstracts;
 
 use CarloNicora\Minimalism\Abstracts\AbstractModel;
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Factories\MinimalismFactories;
 use CarloNicora\Minimalism\Interfaces\User\Interfaces\UserServiceInterface;
-use CarloNicora\Minimalism\Services\Groups\IO\GroupIO;
-use CarloNicora\Minimalism\Services\Groups\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\UserIO;
 use Exception;
 use RuntimeException;
 

@@ -2,59 +2,47 @@
 namespace CarloNicora\Minimalism\Services\Groups\Models;
 
 use CarloNicora\Minimalism\Enums\HttpCode;
-use CarloNicora\Minimalism\Interfaces\Data\Interfaces\DataFunctionInterface;
-use CarloNicora\Minimalism\Interfaces\Data\Objects\DataFunction;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Parameters\PositionedEncryptedParameter;
-use CarloNicora\Minimalism\Services\Builder\Builder;
-use CarloNicora\Minimalism\Services\Groups\Abstracts\AbstractGroupModel;
-use CarloNicora\Minimalism\Services\Groups\Builders\GroupBuilder;
-use CarloNicora\Minimalism\Services\Groups\Data\Group;
-use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\Groups\IO\GroupIO;
-use CarloNicora\Minimalism\Services\Groups\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\Caches\GroupsCacheFactory;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\DataObjects\Group;
+use CarloNicora\Minimalism\Services\Groups\Models\Abstracts\AbstractGroupModel;
 use CarloNicora\Minimalism\Services\Groups\Validators\GroupPostValidator;
+use CarloNicora\Minimalism\Services\ResourceBuilder\ResourceBuilder;
 use Exception;
 
 class Groups extends AbstractGroupModel
 {
     /**
-     * @param Builder $builder
+     * @param ResourceBuilder $builder
      * @param PositionedEncryptedParameter|null $groupId
      * @return HttpCode
      * @throws Exception
      */
     public function get(
-        Builder $builder,
+        ResourceBuilder $builder,
         ?PositionedEncryptedParameter $groupId=null,
     ): HttpCode
     {
         if ($groupId !== null) {
-            /** @see GroupIO::readByGroupId() */
+            $group = $this->objectFactory->create(GroupIO::class)->readByGroupId($groupId->getValue());
+
             $this->document->addResource(
-                resource: current(
-                    $builder->build(
-                        resourceTransformerClass: GroupBuilder::class,
-                        function: new DataFunction(
-                            type: DataFunctionInterface::TYPE_LOADER,
-                            className: GroupIO::class,
-                            functionName: 'readByGroupId',
-                            parameters: [$groupId->getValue()],
-                            cacheBuilder: GroupsCacheFactory::group($groupId->getValue()),
-                        ),
-                    ),
+                resource: $builder->buildResource(
+                    builderClass: Group::class,
+                    data: $group,
+                    cacheBuilder: GroupsCacheFactory::group($groupId->getValue()),
                 ),
             );
         } else {
+            $groups = $this->objectFactory->create(GroupIO::class)->readAll();
+
             /** @see GroupIO::readAll() */
             $this->document->addResourceList(
-                resourceList:$builder->build(
-                    resourceTransformerClass: GroupBuilder::class,
-                    function: new DataFunction(
-                        type: DataFunctionInterface::TYPE_LOADER,
-                        className: GroupIO::class,
-                        functionName: 'readAll',
-                        parameters: [],
-                    ),
+                resourceList:$builder->buildResources(
+                    builderClass: Group::class,
+                    data: $groups,
                 ),
             );
         }
@@ -82,29 +70,29 @@ class Groups extends AbstractGroupModel
     }
 
     /**
-     * @param Builder $builder
+     * @param ResourceBuilder $builder
      * @param GroupPostValidator $payload
      * @return HttpCode
      * @throws Exception
      */
     public function post(
-        Builder $builder,
+        ResourceBuilder $builder,
         GroupPostValidator $payload,
     ): HttpCode
     {
         $this->validateBearerGroupCrationCapabilities();
 
-        $group = new Group($this->objectFactory);
-        $group->ingestResource($payload->getDocument()->resources[0]);
+        $group = $builder->ingestResource(
+            dataClass: Group::class,
+            resource: $payload->getSingleResource()
+        );
 
         $group = $this->objectFactory->create(GroupIO::class)->insert($group);
 
         $this->document->addResource(
-            resource: current(
-                $builder->buildByData(
-                    resourceTransformerClass: GroupBuilder::class,
-                    data: [$group->export()],
-                ),
+            resource: $builder->buildResource(
+                builderClass: Group::class,
+                data: $group,
             ),
         );
 

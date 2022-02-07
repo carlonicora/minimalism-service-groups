@@ -1,10 +1,10 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Groups\Factories;
+namespace CarloNicora\Minimalism\Services\Groups\Database\Groups\Caches;
 
 use CarloNicora\Minimalism\Interfaces\Cache\Interfaces\CacheBuilderInterface;
-use CarloNicora\Minimalism\Services\Groups\Abstracts\AbstractCacheFactory;
+use CarloNicora\Minimalism\Services\Cacher\Factories\CacheBuilderFactory;
 
-class GroupsCacheFactory extends AbstractCacheFactory
+class GroupsCacheFactory extends CacheBuilderFactory
 {
     /**
      * @param int $groupId

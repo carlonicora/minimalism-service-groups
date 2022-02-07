@@ -1,25 +1,28 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Groups\IO;
+namespace CarloNicora\Minimalism\Services\Groups\Database\Groups\IO;
 
-use CarloNicora\Minimalism\Services\DataMapper\Abstracts\AbstractLoader;
+use CarloNicora\Minimalism\Exceptions\MinimalismException;
+use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
+use CarloNicora\Minimalism\Services\Groups\Database\Groups\Caches\GroupsCacheFactory;
 use CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables\UserGroupsTable;
-use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
+use CarloNicora\Minimalism\Services\MySQL\Factories\SqlFactory;
 
-class UserIO extends AbstractLoader
+class UserIO extends AbstractSqlIO
 {
     /**
      * @param int $groupId
      * @return array
+     * @throws MinimalismException
      */
     public function readByGroupId(
         int $groupId,
     ): array
     {
-        /** @see UserGroupsTable::readGroupUsers() */
+        $factory = SqlFactory::create(UserGroupsTable::class)
+            ->addParameter(UserGroupsTable::groupId, $groupId);
+
         return $this->data->read(
-            tableInterfaceClassName: UserGroupsTable::class,
-            functionName: 'readGroupUsers',
-            parameters: [$groupId],
+            factory: $factory,
             cacheBuilder: GroupsCacheFactory::groupUsers($groupId),
         );
     }
@@ -28,17 +31,19 @@ class UserIO extends AbstractLoader
      * @param int $userId
      * @param int $groupId
      * @return bool
+     * @throws MinimalismException
      */
     public function doesUserBelongsToGroup(
         int $userId,
         int $groupId,
     ): bool
     {
-        /** @see UserGroupsTable::readByUserIdGroupId() */
+        $factory = SqlFactory::create(UserGroupsTable::class)
+            ->addParameter(UserGroupsTable::userId, $userId)
+            ->addParameter(UserGroupsTable::groupId, $groupId);
+
         $recordset = $this->data->read(
-            tableInterfaceClassName: UserGroupsTable::class,
-            functionName: 'readByUserIdGroupId',
-            parameters: [$userId, $groupId],
+            factory: $factory,
         );
 
         return $recordset !== [];
@@ -48,16 +53,21 @@ class UserIO extends AbstractLoader
      * @param int $userId
      * @param int $groupId
      * @return void
+     * @throws MinimalismException
      */
     public function insert(
         int $userId,
         int $groupId,
     ): void
     {
+        $factory = SqlFactory::create(UserGroupsTable::class)
+            ->insert()
+            ->addParameter(UserGroupsTable::userId, $userId)
+            ->addParameter(UserGroupsTable::groupId, $groupId);
+
         /** @noinspection UnusedFunctionResultInspection */
-        $this->data->insert(
-            tableInterfaceClassName: UserGroupsTable::class,
-            records: [['userId' => $userId, 'groupId' => $groupId]],
+        $this->data->create(
+            factory: $factory,
         );
 
         $this->cache->invalidate(
@@ -73,15 +83,20 @@ class UserIO extends AbstractLoader
      * @param int $userId
      * @param int $groupId
      * @return void
+     * @throws MinimalismException
      */
     public function delete(
         int $userId,
         int $groupId,
     ): void
     {
+        $factory = SqlFactory::create(UserGroupsTable::class)
+            ->delete()
+            ->addParameter(UserGroupsTable::userId, $userId)
+            ->addParameter(UserGroupsTable::groupId, $groupId);
+
         $this->data->delete(
-            tableInterfaceClassName: UserGroupsTable::class,
-            records: [['userId' => $userId, 'groupId' => $groupId]],
+            factory: $factory,
         );
 
         $this->cache->invalidate(
@@ -96,22 +111,27 @@ class UserIO extends AbstractLoader
     /**
      * @param int $groupId
      * @return void
+     * @throws MinimalismException
      */
     public function deleteByGroupId(
         int $groupId,
     ): void
     {
-        /** @see UserGroupsTable::readGroupUsers() */
+        $factory = SqlFactory::create(UserGroupsTable::class)
+            ->selectAll()
+            ->addParameter(UserGroupsTable::groupId, $groupId);
+
         $recordset = $this->data->read(
-            tableInterfaceClassName: UserGroupsTable::class,
-            functionName: 'readGroupUsers',
-            parameters: [$groupId],
-            cacheBuilder: GroupsCacheFactory::groupUsers($groupId)
+            factory: $factory,
+            cacheBuilder: GroupsCacheFactory::groupUsers($groupId),
         );
 
+        $factory = SqlFactory::create(UserGroupsTable::class)
+            ->delete()
+            ->addParameter(UserGroupsTable::groupId, $groupId);
+
         $this->data->delete(
-            tableInterfaceClassName: UserGroupsTable::class,
-            records: $recordset,
+            factory: $factory,
             cacheBuilder: GroupsCacheFactory::groupUsers($groupId)
         );
 

@@ -1,56 +1,20 @@
 <?php
 namespace CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables;
 
-use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractMySqlTable;
-use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
-use Exception;
+use CarloNicora\Minimalism\Services\MySQL\Data\SqlField;
+use CarloNicora\Minimalism\Services\MySQL\Data\SqlTable;
+use CarloNicora\Minimalism\Services\MySQL\Enums\FieldOption;
+use CarloNicora\Minimalism\Services\MySQL\Enums\FieldType;
 
-class GroupsTable extends AbstractMySqlTable
+#[SqlTable(name: 'groupings', databaseIdentifier: 'Groups')]
+enum GroupsTable
 {
-    /** @var string  */
-    protected static string $tableName = 'groupings';
+    #[SqlField(fieldType: FieldType::Integer,fieldOption: FieldOption::AutoIncrement)]
+    case groupId;
 
-    /** @var array  */
-    protected static array $fields = [
-        'groupId'           => FieldInterface::INTEGER
-                            +  FieldInterface::PRIMARY_KEY
-                            +  FieldInterface::AUTO_INCREMENT,
-        'name'              => FieldInterface::STRING,
-        'canCreateGroups'   => FieldInterface::INTEGER,
-    ];
+    #[SqlField]
+    case name;
 
-    /**
-     * @param string $name
-     * @return array
-     * @throws Exception
-     */
-    public function readByGroupName(
-        string $name,
-    ): array
-    {
-        $this->sql = 'SELECT *'
-            . ' FROM ' . self::getTableName()
-            . ' WHERE name=?;';
-        $this->parameters = ['s', $name];
-
-        return $this->functions->runRead();
-    }
-
-    /**
-     * @param int $userId
-     * @return array
-     * @throws Exception
-     */
-    public function readUserGroups(
-        int $userId,
-    ): array{
-        $this->sql = 'SELECT * '
-            . ' FROM ' . self::getTableName()
-            . ' JOIN ' . UserGroupsTable::getTableName()
-            . ' ON ' . self::getTableName() . '.groupId=' . UserGroupsTable::getTableName() . '.groupId'
-            . ' WHERE ' . UserGroupsTable::getTableName() . '.userId=?';
-        $this->parameters = ['i', $userId];
-
-        return $this->functions->runRead();
-    }
+    #[SqlField(fieldType: FieldType::Integer)]
+    case canCreateGroups;
 }
