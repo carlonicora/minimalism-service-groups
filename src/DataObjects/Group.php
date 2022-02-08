@@ -54,6 +54,16 @@ class Group implements SqlDataObjectInterface, ResourceableDataInterface
     }
 
     /**
+     * @param string $name
+     */
+    public function setName(
+        string $name,
+    ): void
+    {
+        $this->name = $name;
+    }
+
+    /**
      * @return bool
      */
     public function canCreateGroups(
