@@ -1,10 +1,10 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Groups\Database\Groups\IO;
+namespace CarloNicora\Minimalism\Services\Groups\Data\Users\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\Caches\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables\UserGroupsTable;
+use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
+use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
 use CarloNicora\Minimalism\Services\MySQL\Factories\SqlFactory;
 
 class UserIO extends AbstractSqlIO

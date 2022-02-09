@@ -1,9 +1,9 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Groups\Builders;
+namespace CarloNicora\Minimalism\Services\Groups\Data\Users\Builders;
 
 use CarloNicora\JsonApi\Objects\ResourceObject;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Interfaces\EncrypterInterface;
-use CarloNicora\Minimalism\Services\Groups\DataObjects\Group;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\ResourceBuilder\Abstracts\AbstractResourceBuilder;
 use CarloNicora\Minimalism\Services\ResourceBuilder\Interfaces\ResourceableDataInterface;
 use Exception;

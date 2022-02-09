@@ -7,7 +7,7 @@ use CarloNicora\Minimalism\Services\DataValidator\Enums\DataTypes;
 use CarloNicora\Minimalism\Services\DataValidator\Objects\AttributeValidator;
 use CarloNicora\Minimalism\Services\DataValidator\Objects\DocumentValidator;
 use CarloNicora\Minimalism\Services\DataValidator\Objects\ResourceValidator;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\IO\GroupIO;
 use Exception;
 use RuntimeException;
 

@@ -3,10 +3,10 @@ namespace CarloNicora\Minimalism\Services\Groups\Models;
 
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Parameters\PositionedEncryptedParameter;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\Caches\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\UserIO;
-use CarloNicora\Minimalism\Services\Groups\DataObjects\Group;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Data\Users\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
 use CarloNicora\Minimalism\Services\Groups\Models\Abstracts\AbstractGroupModel;
 use CarloNicora\Minimalism\Services\Groups\Validators\GroupPostValidator;
 use CarloNicora\Minimalism\Services\ResourceBuilder\ResourceBuilder;

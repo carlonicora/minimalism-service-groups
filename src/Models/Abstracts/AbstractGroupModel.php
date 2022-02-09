@@ -5,8 +5,8 @@ use CarloNicora\Minimalism\Abstracts\AbstractModel;
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Factories\MinimalismFactories;
 use CarloNicora\Minimalism\Interfaces\User\Interfaces\UserServiceInterface;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\UserIO;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Data\Users\IO\UserIO;
 use Exception;
 use RuntimeException;
 

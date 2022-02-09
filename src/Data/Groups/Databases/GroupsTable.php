@@ -1,5 +1,5 @@
 <?php
-namespace CarloNicora\Minimalism\Services\Groups\Database\Groups\Tables;
+namespace CarloNicora\Minimalism\Services\Groups\Data\Groups\Databases;
 
 use CarloNicora\Minimalism\Services\MySQL\Data\SqlField;
 use CarloNicora\Minimalism\Services\MySQL\Data\SqlTable;

@@ -2,9 +2,9 @@
 namespace CarloNicora\Minimalism\Services\Groups;
 
 use CarloNicora\Minimalism\Abstracts\AbstractService;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\GroupIO;
-use CarloNicora\Minimalism\Services\Groups\Database\Groups\IO\UserIO;
-use CarloNicora\Minimalism\Services\Groups\DataObjects\Group;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\IO\GroupIO;
+use CarloNicora\Minimalism\Services\Groups\Data\Users\IO\UserIO;
 use Exception;
 
 class Groups extends AbstractService
