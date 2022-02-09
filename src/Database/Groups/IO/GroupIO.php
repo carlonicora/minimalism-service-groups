@@ -26,7 +26,7 @@ class GroupIO extends AbstractSqlIO
         return $this->data->read(
             factory: $factory,
             sqlObjectInterfaceClass: Group::class,
-            expectsSingleRecord: false,
+            requireObjectsList: true,
         );
     }
 
@@ -87,7 +87,7 @@ class GroupIO extends AbstractSqlIO
             factory: $factory,
             cacheBuilder:GroupsCacheFactory::userGroups($userId),
             sqlObjectInterfaceClass: Group::class,
-            expectsSingleRecord: false,
+            requireObjectsList: true,
         );
     }
 
