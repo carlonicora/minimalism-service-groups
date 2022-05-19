@@ -5,7 +5,7 @@ use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlFactory;
+use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 
 class UserIO extends AbstractSqlIO
 {
@@ -18,11 +18,11 @@ class UserIO extends AbstractSqlIO
         int $groupId,
     ): array
     {
-        $factory = SqlFactory::create(UserGroupsTable::class)
+        $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         return $this->data->read(
-            factory: $factory,
+            queryFactory: $factory,
             cacheBuilder: GroupsCacheFactory::groupUsers($groupId),
         );
     }
@@ -38,12 +38,12 @@ class UserIO extends AbstractSqlIO
         int $groupId,
     ): bool
     {
-        $factory = SqlFactory::create(UserGroupsTable::class)
+        $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->addParameter(UserGroupsTable::userId, $userId)
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         $recordset = $this->data->read(
-            factory: $factory,
+            queryFactory: $factory,
         );
 
         return $recordset !== [];
@@ -60,14 +60,14 @@ class UserIO extends AbstractSqlIO
         int $groupId,
     ): void
     {
-        $factory = SqlFactory::create(UserGroupsTable::class)
+        $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->insert()
             ->addParameter(UserGroupsTable::userId, $userId)
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         /** @noinspection UnusedFunctionResultInspection */
         $this->data->create(
-            factory: $factory,
+            queryFactory: $factory,
         );
 
         $this->cache->invalidate(
@@ -85,18 +85,18 @@ class UserIO extends AbstractSqlIO
      * @return void
      * @throws MinimalismException
      */
-    public function delete(
+        public function deleteByUserIdGroupId(
         int $userId,
         int $groupId,
     ): void
     {
-        $factory = SqlFactory::create(UserGroupsTable::class)
+        $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->delete()
             ->addParameter(UserGroupsTable::userId, $userId)
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         $this->data->delete(
-            factory: $factory,
+            queryFactory: $factory,
         );
 
         $this->cache->invalidate(
@@ -117,21 +117,21 @@ class UserIO extends AbstractSqlIO
         int $groupId,
     ): void
     {
-        $factory = SqlFactory::create(UserGroupsTable::class)
+        $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->selectAll()
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         $recordset = $this->data->read(
-            factory: $factory,
+            queryFactory: $factory,
             cacheBuilder: GroupsCacheFactory::groupUsers($groupId),
         );
 
-        $factory = SqlFactory::create(UserGroupsTable::class)
+        $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->delete()
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         $this->data->delete(
-            factory: $factory,
+            queryFactory: $factory,
             cacheBuilder: GroupsCacheFactory::groupUsers($groupId)
         );
 

@@ -2,13 +2,15 @@
 namespace CarloNicora\Minimalism\Services\Groups\Data\Groups\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
+use CarloNicora\Minimalism\Interfaces\Cache\Interfaces\CacheBuilderInterface;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
+use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlDataObjectInterface;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\Databases\GroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlFactory;
 use CarloNicora\Minimalism\Services\MySQL\Factories\SqlJoinFactory;
+use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 use Exception;
 
 class GroupIO extends AbstractSqlIO
@@ -20,12 +22,12 @@ class GroupIO extends AbstractSqlIO
     public function readAll(
     ): array
     {
-        $factory = SqlFactory::create(GroupsTable::class)
+        $factory = SqlQueryFactory::create(GroupsTable::class)
             ->selectAll();
 
         return $this->data->read(
-            factory: $factory,
-            sqlObjectInterfaceClass: Group::class,
+            queryFactory: $factory,
+            responseType: Group::class,
             requireObjectsList: true,
         );
     }
@@ -39,14 +41,14 @@ class GroupIO extends AbstractSqlIO
         int $groupId,
     ): Group
     {
-        $factory = SqlFactory::create(GroupsTable::class)
+        $factory = SqlQueryFactory::create(GroupsTable::class)
             ->selectAll()
             ->addParameter(GroupsTable::groupId, $groupId);
 
         return $this->data->read(
-            factory: $factory,
+            queryFactory: $factory,
             cacheBuilder: GroupsCacheFactory::group($groupId),
-            sqlObjectInterfaceClass: Group::class,
+            responseType: Group::class,
         );
     }
 
@@ -59,13 +61,13 @@ class GroupIO extends AbstractSqlIO
         string $name,
     ): Group
     {
-        $factory = SqlFactory::create(GroupsTable::class)
+        $factory = SqlQueryFactory::create(GroupsTable::class)
             ->selectAll()
             ->addParameter(GroupsTable::name, $name);
 
         return $this->data->read(
-            factory: $factory,
-            sqlObjectInterfaceClass: Group::class,
+            queryFactory: $factory,
+            responseType: Group::class,
         );
     }
 
@@ -78,35 +80,32 @@ class GroupIO extends AbstractSqlIO
         int $userId,
     ): array
     {
-        $factory = SqlFactory::create(GroupsTable::class)
+        $factory = SqlQueryFactory::create(GroupsTable::class)
             ->selectAll()
             ->addJoin(new SqlJoinFactory(GroupsTable::groupId, UserGroupsTable::groupId))
             ->addParameter(UserGroupsTable::userId, $userId);
 
         return $this->data->read(
-            factory: $factory,
+            queryFactory: $factory,
             cacheBuilder:GroupsCacheFactory::userGroups($userId),
-            sqlObjectInterfaceClass: Group::class,
+            responseType: Group::class,
             requireObjectsList: true,
         );
     }
 
     /**
-     * @param int $groupId
+     * @param Group $dataObject
+     * @param CacheBuilderInterface|null $cache
      * @return void
-     * @throws MinimalismException
      */
     public function delete(
-        int $groupId,
+        SqlDataObjectInterface $dataObject,
+        ?CacheBuilderInterface $cache = null
     ): void
     {
-        $factory = SqlFactory::create(GroupsTable::class)
-            ->delete()
-            ->addParameter(GroupsTable::groupId, $groupId);
-
-        $this->data->delete(
-            factory: $factory,
-            cacheBuilder: GroupsCacheFactory::group($groupId)
+        parent::delete(
+            dataObject: $dataObject,
+            cache: GroupsCacheFactory::group($dataObject->getId())
         );
     }
 
@@ -120,8 +119,8 @@ class GroupIO extends AbstractSqlIO
     ): Group
     {
         return $this->data->create(
-            factory: $group,
-            sqlObjectInterfaceClass: Group::class,
+            queryFactory: $group,
+            responseType: Group::class,
         );
     }
 }

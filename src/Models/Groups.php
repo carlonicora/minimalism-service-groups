@@ -63,7 +63,7 @@ class Groups extends AbstractGroupModel
 
         $this->validateBearerGroupBelonging($group->getId());
 
-        $this->objectFactory->create(GroupIO::class)->delete($group->getId());
+        $this->objectFactory->create(GroupIO::class)->delete($group);
         $this->objectFactory->create(UserIO::class)->deleteByGroupId($group->getId());
 
         return HttpCode::NoContent;
