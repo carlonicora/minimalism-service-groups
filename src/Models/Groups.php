@@ -3,6 +3,7 @@ namespace CarloNicora\Minimalism\Services\Groups\Models;
 
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Parameters\PositionedEncryptedParameter;
+use CarloNicora\Minimalism\Services\Groups\Data\Groups\Builders\GroupBuilder;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\IO\GroupIO;
 use CarloNicora\Minimalism\Services\Groups\Data\Users\IO\UserIO;
@@ -30,7 +31,7 @@ class Groups extends AbstractGroupModel
 
             $this->document->addResource(
                 resource: $builder->buildResource(
-                    builderClass: Group::class,
+                    builderClass: GroupBuilder::class,
                     data: $group,
                     cacheBuilder: GroupsCacheFactory::group($groupId->getValue()),
                 ),
@@ -41,7 +42,7 @@ class Groups extends AbstractGroupModel
             /** @see GroupIO::readAll() */
             $this->document->addResourceList(
                 resourceList:$builder->buildResources(
-                    builderClass: Group::class,
+                    builderClass: GroupBuilder::class,
                     data: $groups,
                 ),
             );
@@ -91,7 +92,7 @@ class Groups extends AbstractGroupModel
 
         $this->document->addResource(
             resource: $builder->buildResource(
-                builderClass: Group::class,
+                builderClass: GroupBuilder::class,
                 data: $group,
             ),
         );
