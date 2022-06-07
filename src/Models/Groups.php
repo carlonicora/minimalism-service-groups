@@ -84,7 +84,7 @@ class Groups extends AbstractGroupModel
         $this->validateBearerGroupCrationCapabilities();
 
         $group = $builder->ingestResource(
-            dataClass: Group::class,
+            dataClass: GroupBuilder::class,
             resource: $payload->getSingleResource()
         );
 
