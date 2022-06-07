@@ -57,6 +57,7 @@ class GroupBuilder extends AbstractResourceBuilder
         if ($resource->id !== null){
             $response->setId($this->encrypter !== null ? $this->encrypter->decryptId($resource->id) : (int)$resource->id);
         }
+        $response->setName($resource->attributes->has('name') ? $resource->attributes->get('name') : false);
         $response->setCanCreateGroups($resource->attributes->has('canCreateGroups') ? $resource->attributes->get('canCreateGroups') : false);
 
         return $response;
