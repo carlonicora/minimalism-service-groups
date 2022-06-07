@@ -13,13 +13,14 @@ class GroupBuilder extends AbstractResourceBuilder
 {
     /**
      * @param ObjectFactory|null $objectFactory
-     * @param EncrypterInterface|null $encrypter
+     * @param EncrypterInterface $encrypter
      */
     public function __construct(
-        private ?ObjectFactory $objectFactory,
-        private ?EncrypterInterface $encrypter,
+        private readonly ?ObjectFactory       $objectFactory,
+        protected readonly EncrypterInterface $encrypter,
     )
     {
+        parent::__construct($this->encrypter);
     }
 
     /**
@@ -43,11 +44,13 @@ class GroupBuilder extends AbstractResourceBuilder
 
     /**
      * @param ResourceObject $resource
+     * @param ResourceableDataInterface|null $dataObject
      * @return Group
      * @throws Exception
      */
     public function ingestResource(
         ResourceObject $resource,
+        ?ResourceableDataInterface $dataObject,
     ): ResourceableDataInterface
     {
         $response = $this->objectFactory->create(Group::class);

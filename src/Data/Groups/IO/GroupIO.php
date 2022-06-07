@@ -5,6 +5,7 @@ use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Cache\Interfaces\CacheBuilderInterface;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
 use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlDataObjectInterface;
+use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlQueryFactoryInterface;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\Databases\GroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
@@ -22,8 +23,7 @@ class GroupIO extends AbstractSqlIO
     public function readAll(
     ): array
     {
-        $factory = SqlQueryFactory::create(GroupsTable::class)
-            ->selectAll();
+        $factory = SqlQueryFactory::create(GroupsTable::class);
 
         return $this->data->read(
             queryFactory: $factory,
@@ -42,7 +42,6 @@ class GroupIO extends AbstractSqlIO
     ): Group
     {
         $factory = SqlQueryFactory::create(GroupsTable::class)
-            ->selectAll()
             ->addParameter(GroupsTable::groupId, $groupId);
 
         return $this->data->read(
@@ -62,7 +61,6 @@ class GroupIO extends AbstractSqlIO
     ): Group
     {
         $factory = SqlQueryFactory::create(GroupsTable::class)
-            ->selectAll()
             ->addParameter(GroupsTable::name, $name);
 
         return $this->data->read(
@@ -81,7 +79,6 @@ class GroupIO extends AbstractSqlIO
     ): array
     {
         $factory = SqlQueryFactory::create(GroupsTable::class)
-            ->selectAll()
             ->addJoin(new SqlJoinFactory(GroupsTable::groupId, UserGroupsTable::groupId))
             ->addParameter(UserGroupsTable::userId, $userId);
 
@@ -94,18 +91,18 @@ class GroupIO extends AbstractSqlIO
     }
 
     /**
-     * @param Group $dataObject
+     * @param SqlDataObjectInterface|SqlQueryFactoryInterface|array $dataObjectOrQueryFactory
      * @param CacheBuilderInterface|null $cache
      * @return void
      */
     public function delete(
-        SqlDataObjectInterface $dataObject,
+        SqlDataObjectInterface|SqlQueryFactoryInterface|array $dataObjectOrQueryFactory,
         ?CacheBuilderInterface $cache = null
     ): void
     {
         parent::delete(
-            dataObject: $dataObject,
-            cache: GroupsCacheFactory::group($dataObject->getId())
+            dataObjectOrQueryFactory: $dataObjectOrQueryFactory,
+            cache: GroupsCacheFactory::group($dataObjectOrQueryFactory->getId())
         );
     }
 

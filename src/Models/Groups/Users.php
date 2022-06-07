@@ -81,7 +81,7 @@ class Users extends AbstractGroupModel
             return HttpCode::PreconditionFailed;
         }
 
-        $this->objectFactory->create(UserIO::class)->delete(
+        $this->objectFactory->create(UserIO::class)->deleteByUserIdGroupId(
             userId: $userId->getValue(),
             groupId: $group->getId(),
         );

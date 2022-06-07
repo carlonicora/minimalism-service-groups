@@ -118,7 +118,6 @@ class UserIO extends AbstractSqlIO
     ): void
     {
         $factory = SqlQueryFactory::create(UserGroupsTable::class)
-            ->selectAll()
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
         $recordset = $this->data->read(

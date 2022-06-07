@@ -17,7 +17,7 @@ class GroupPostValidator extends AbstractDataValidator
      *
      */
     public function __construct(
-        private GroupIO $groupIO,
+        private readonly GroupIO $groupIO,
     )
     {
         $this->documentValidator = new DocumentValidator();
