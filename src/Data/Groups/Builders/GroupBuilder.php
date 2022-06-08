@@ -20,6 +20,7 @@ class GroupBuilder extends AbstractResourceBuilder
         protected readonly EncrypterInterface $encrypter,
     )
     {
+        parent::__construct($encrypter);
     }
 
     /**
@@ -33,7 +34,7 @@ class GroupBuilder extends AbstractResourceBuilder
     {
         $response = new ResourceObject(
             type: 'group',
-            id: $this->encrypter !== null ? $this->encrypter->encryptId($data->getId()) : $data->getId(),
+            id: $this->encrypter->encryptId($data->getId()),
         );
         $response->attributes->add(name: 'name', value: $data->getName());
         $response->attributes->add(name: 'canCreateGroups', value: $data->canCreateGroups());
@@ -55,7 +56,7 @@ class GroupBuilder extends AbstractResourceBuilder
         $response = $this->objectFactory->create(Group::class);
 
         if ($resource->id !== null){
-            $response->setId($this->encrypter !== null ? $this->encrypter->decryptId($resource->id) : (int)$resource->id);
+            $response->setId($this->encrypter->decryptId($resource->id));
         }
         $response->setName($resource->attributes->has('name') ? $resource->attributes->get('name') : false);
         $response->setCanCreateGroups($resource->attributes->has('canCreateGroups') ? $resource->attributes->get('canCreateGroups') : false);

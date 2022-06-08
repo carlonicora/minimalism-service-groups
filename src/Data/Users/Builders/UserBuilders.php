@@ -20,7 +20,7 @@ class UserBuilders extends AbstractResourceBuilder
     {
         return new ResourceObject(
             type: 'user',
-            id: $this->encrypter !== null ? $this->encrypter->encryptId($data->getId()) : $data->getId(),
+            id: $this->encrypter->encryptId($data->getId()),
         );
     }
 }

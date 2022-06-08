@@ -4,7 +4,6 @@ namespace CarloNicora\Minimalism\Services\Groups\Models;
 use CarloNicora\Minimalism\Enums\HttpCode;
 use CarloNicora\Minimalism\Interfaces\Encrypter\Parameters\PositionedEncryptedParameter;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\Builders\GroupBuilder;
-use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\IO\GroupIO;
 use CarloNicora\Minimalism\Services\Groups\Data\Users\IO\UserIO;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
@@ -64,7 +63,7 @@ class Groups extends AbstractGroupModel
 
         $this->validateBearerGroupBelonging($group->getId());
 
-        $this->objectFactory->create(GroupIO::class)->delete($group);
+        $this->objectFactory->create(GroupIO::class)->deleteByGroup($group);
         $this->objectFactory->create(UserIO::class)->deleteByGroupId($group->getId());
 
         return HttpCode::NoContent;

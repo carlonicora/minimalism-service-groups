@@ -2,10 +2,7 @@
 namespace CarloNicora\Minimalism\Services\Groups\Data\Groups\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
-use CarloNicora\Minimalism\Interfaces\Cache\Interfaces\CacheBuilderInterface;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
-use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlDataObjectInterface;
-use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlQueryFactoryInterface;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\Databases\GroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
@@ -91,16 +88,14 @@ class GroupIO extends AbstractSqlIO
     }
 
     /**
-     * @param SqlDataObjectInterface|SqlQueryFactoryInterface|array $dataObjectOrQueryFactory
-     * @param CacheBuilderInterface|null $cache
+     * @param Group $dataObjectOrQueryFactory
      * @return void
      */
-    public function delete(
-        SqlDataObjectInterface|SqlQueryFactoryInterface|array $dataObjectOrQueryFactory,
-        ?CacheBuilderInterface $cache = null
+    public function deleteByGroup(
+        Group $dataObjectOrQueryFactory,
     ): void
     {
-        parent::delete(
+        $this->delete(
             dataObjectOrQueryFactory: $dataObjectOrQueryFactory,
             cache: GroupsCacheFactory::group($dataObjectOrQueryFactory->getId())
         );
