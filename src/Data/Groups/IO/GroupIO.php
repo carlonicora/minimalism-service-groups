@@ -3,12 +3,12 @@ namespace CarloNicora\Minimalism\Services\Groups\Data\Groups\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlJoinFactory;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\Databases\GroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects\Group;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlJoinFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 use Exception;
 
 class GroupIO extends AbstractSqlIO
@@ -76,7 +76,7 @@ class GroupIO extends AbstractSqlIO
     ): array
     {
         $factory = SqlQueryFactory::create(GroupsTable::class)
-            ->addJoin(new SqlJoinFactory(GroupsTable::groupId, UserGroupsTable::groupId))
+            ->addJoin(SqlJoinFactory::create(GroupsTable::groupId, UserGroupsTable::groupId))
             ->addParameter(UserGroupsTable::userId, $userId);
 
         return $this->data->read(

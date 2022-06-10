@@ -3,9 +3,9 @@ namespace CarloNicora\Minimalism\Services\Groups\Data\Users\IO;
 
 use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
+use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
-use CarloNicora\Minimalism\Services\MySQL\Factories\SqlQueryFactory;
 
 class UserIO extends AbstractSqlIO
 {

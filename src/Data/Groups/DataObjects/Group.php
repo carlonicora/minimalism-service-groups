@@ -4,8 +4,8 @@ namespace CarloNicora\Minimalism\Services\Groups\Data\Groups\DataObjects;
 use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbField;
 use CarloNicora\Minimalism\Interfaces\Sql\Attributes\DbTable;
 use CarloNicora\Minimalism\Interfaces\Sql\Interfaces\SqlDataObjectInterface;
+use CarloNicora\Minimalism\Interfaces\Sql\Traits\SqlDataObjectTrait;
 use CarloNicora\Minimalism\Services\Groups\Data\Groups\Databases\GroupsTable;
-use CarloNicora\Minimalism\Services\MySQL\Traits\SqlDataObjectTrait;
 use CarloNicora\Minimalism\Services\ResourceBuilder\Interfaces\ResourceableDataInterface;
 
 #[DbTable(tableClass: GroupsTable::class)]
