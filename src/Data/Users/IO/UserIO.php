@@ -5,13 +5,14 @@ use CarloNicora\Minimalism\Exceptions\MinimalismException;
 use CarloNicora\Minimalism\Interfaces\Sql\Abstracts\AbstractSqlIO;
 use CarloNicora\Minimalism\Interfaces\Sql\Factories\SqlQueryFactory;
 use CarloNicora\Minimalism\Services\Groups\Data\UserGroups\Databases\UserGroupsTable;
+use CarloNicora\Minimalism\Services\Groups\Data\Users\DataObjects\User;
 use CarloNicora\Minimalism\Services\Groups\Factories\GroupsCacheFactory;
 
 class UserIO extends AbstractSqlIO
 {
     /**
      * @param int $groupId
-     * @return array
+     * @return User[]
      * @throws MinimalismException
      */
     public function readByGroupId(
@@ -21,10 +22,19 @@ class UserIO extends AbstractSqlIO
         $factory = SqlQueryFactory::create(UserGroupsTable::class)
             ->addParameter(UserGroupsTable::groupId, $groupId);
 
-        return $this->data->read(
+        $result = $this->data->read(
             queryFactory: $factory,
             cacheBuilder: GroupsCacheFactory::groupUsers($groupId),
         );
+
+        $dataObjects = [];
+        foreach ($result as $row) {
+            $user = new User();
+            $user->setId($row['userId']);
+            $dataObjects []= $user;
+        }
+
+        return $dataObjects;
     }
 
     /**
@@ -85,7 +95,7 @@ class UserIO extends AbstractSqlIO
      * @return void
      * @throws MinimalismException
      */
-        public function deleteByUserIdGroupId(
+    public function deleteByUserIdGroupId(
         int $userId,
         int $groupId,
     ): void
